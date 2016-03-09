@@ -1,9 +1,9 @@
-int enableLeft = 5;
-int enableRight = 6;
-int inputLeftFront = 0;
-int inputLeftBack = 1;
-int inputRightBack = 10;
-int inputRightFront = 15;
+const int enableLeft = 5;
+const int enableRight = 6;
+const int inputLeftFront = A0;
+const int inputLeftBack = A1;
+const int inputRightBack = A2;
+const int inputRightFront = A3;
 char choice;
 void setup()
 {
@@ -13,6 +13,10 @@ void setup()
 	
 	pinMode(enableLeft, OUTPUT);
 	pinMode(enableRight, OUTPUT);
+	pinMode(inputLeftFront, OUTPUT);
+	pinMode(inputLeftBack, OUTPUT);
+	pinMode(inputRightBack, OUTPUT);
+	pinMode(inputRightFront, OUTPUT);
 	/*
 	pinMode(inputLeftFront, OUTPUT);
 	pinMode(inputLeftBack, OUTPUT);
@@ -28,29 +32,100 @@ void loop()
 			//if the choise changed put the new value in the variable
 			choice = Serial.read();
 		
-		
+			
 	}
+	
+
 	if (choice == '0') {
 		//stop the car
-		Serial.print("Stopping car");
+		carStop();
 	}
 	else if (choice == '1') {
 		//drive car forward
-		Serial.print("Driving car forward");
-		carForward(255);
+		//Serial.print("Driving car forward");
+		carForward(128);
+	}
+	else if (choice == '2') {
+		//turn left
+		carTurnLeft(150, true);
+	}
+	else if (choice == '3') {
+		//turn right
+		carTurnRight(150, true);
+	}
+	else if (choice == '4') {
+		//drive car backwards
+		carBackwards(128);
 	}
 
 
-
-
 }
-
-void carForward(int speed) {
-	digitalWrite(enableLeft, HIGH);
-	digitalWrite(enableRight, HIGH);
-	digitalWrite(A0, HIGH);
+void carStop() {
+	Serial.print("Stopping");
+	analogWrite(enableLeft, LOW);
+	analogWrite(enableRight, LOW);
+	digitalWrite(A0, LOW);
 	digitalWrite(A1, LOW);
-	digitalWrite(A2, HIGH);
+	digitalWrite(A2, LOW);
 	digitalWrite(A3, LOW);
+}
+void carForward(int speed) {
+	Serial.print("driving forward");
+	analogWrite(enableLeft, speed);
+	analogWrite(enableRight, speed);
+	digitalWrite(inputLeftFront, LOW );
+	digitalWrite(inputLeftBack, HIGH);
+	digitalWrite(inputRightFront, LOW);
+	digitalWrite(inputRightBack, HIGH);
+	
+}
+void carBackwards(int speed) {
+	Serial.print("driving backwards");
+	analogWrite(enableLeft, speed);
+	analogWrite(enableRight, speed);
+	digitalWrite(inputLeftFront, HIGH);
+	digitalWrite(inputLeftBack, LOW);
+	digitalWrite(inputRightFront, HIGH);
+	digitalWrite(inputRightBack, LOW);
+}
+void carTurnLeft(int speed, bool fast) {
+	Serial.print("Turning left");
+	
+	if(fast){
+		analogWrite(enableLeft, speed);
+		analogWrite(enableRight, speed);
+		digitalWrite(inputLeftFront, HIGH);
+		digitalWrite(inputLeftBack, LOW);
+		digitalWrite(inputRightFront, LOW );
+		digitalWrite(inputRightBack, HIGH);
+	}
+	else {
+		analogWrite(enableLeft, speed);
+		analogWrite(enableRight, 0);
+		digitalWrite(inputLeftFront, HIGH);
+		digitalWrite(inputLeftBack, LOW);
+		digitalWrite(inputRightFront, LOW);
+		digitalWrite(inputRightBack, LOW);
+	}
+}
+void carTurnRight(int speed, bool fast) {
+	Serial.print("Turning right");
+
+	if (fast) {
+		analogWrite(enableLeft, speed);
+		analogWrite(enableRight, speed);
+		digitalWrite(inputLeftFront, LOW);
+		digitalWrite(inputLeftBack, HIGH);
+		digitalWrite(inputRightFront, HIGH);
+		digitalWrite(inputRightBack, LOW);
+	}
+	else {
+		analogWrite(enableLeft, 0);
+		analogWrite(enableRight, speed);
+		digitalWrite(inputLeftFront, LOW);
+		digitalWrite(inputLeftBack, LOW);
+		digitalWrite(inputRightFront, HIGH);
+		digitalWrite(inputRightBack, LOW);
+	}
 }
 
