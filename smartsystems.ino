@@ -47,14 +47,22 @@ void loop()
 		carForward(128);
 	}
 	else if (choice == '2') {
-		//turn left
-		carTurnLeft(150, true);
+		//turn left slow
+		carTurnLeft(200, false);
 	}
 	else if (choice == '3') {
-		//turn right
-		carTurnRight(150, true);
+		//turn left fast
+		carTurnLeft(200, true);
 	}
 	else if (choice == '4') {
+		//turn right slow
+		carTurnRight(200, false);
+	}
+	else if (choice == '5') {
+		//turn right fast
+		carTurnRight(200, true);
+	}
+	else if (choice == '6') {
 		//drive car backwards
 		carBackwards(128);
 	}
