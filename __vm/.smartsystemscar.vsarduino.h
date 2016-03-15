@@ -102,5 +102,5 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <..\smartsystems\smartsystems.ino>
+#include <..\smartsystemscar\smartsystemscar.ino>
 #endif

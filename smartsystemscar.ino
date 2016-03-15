@@ -1,55 +1,4 @@
-<<<<<<< HEAD
-int enableLeft = 5;
-int enableRight = 6;
-char wheelFrontLeft = 'A0';
-char wheelBackLeft = 'A1';
-int wheelBackRight = 2;
-int wheelFrontRight = 4;
-char choise = '1';
 
-void setup() {
-	Serial.begin(9600);
-	pinMode(enableLeft, OUTPUT);
-	pinMode(enableRight, OUTPUT);
-	pinMode(A0, OUTPUT);
-	pinMode(A1, OUTPUT);
-	pinMode(A2, OUTPUT);
-	pinMode(A3, OUTPUT);
-}
-
-void loop() {
-	carForward();
-	if (Serial.available()) {
-		choise = Serial.read();
-		if (choise == '0') {
-			Serial.print("options is zero");
-			//carStop();
-		}
-		else if (choise == '1') {
-			Serial.print("options is 1");
-				
-			
-			
-		}
-	}
-
-}
-
-
-void carStop() {
-	digitalWrite(enableLeft, LOW);
-	digitalWrite(enableRight, HIGH);
-}
-void carForward() {
-	Serial.print("Running forward");
-	analogWrite(enableLeft, 150);
-	analogWrite(enableRight, 150);
-	digitalWrite(A2, HIGH);
-	digitalWrite(A3, LOW);
-	digitalWrite(A0, LOW);
-	digitalWrite(A1, HIGH);
-}
-=======
 const int enableLeft = 5;
 const int enableRight = 6;
 const int inputLeftFront = A0;
@@ -62,7 +11,7 @@ void setup()
 	//start serial connection
 
 	Serial.begin(9600);
-	
+
 	pinMode(enableLeft, OUTPUT);
 	pinMode(enableRight, OUTPUT);
 	pinMode(inputLeftFront, OUTPUT);
@@ -81,12 +30,12 @@ void loop()
 {
 	if (Serial.available()) {
 		Serial.print("Serial is available");
-			//if the choise changed put the new value in the variable
-			choice = Serial.read();
-		
-			
+		//if the choise changed put the new value in the variable
+		choice = Serial.read();
+
+
 	}
-	
+
 
 	if (choice == '0') {
 		//stop the car
@@ -125,11 +74,11 @@ void carForward(int speed) {
 	Serial.print("driving forward");
 	analogWrite(enableLeft, speed);
 	analogWrite(enableRight, speed);
-	digitalWrite(inputLeftFront, LOW );
+	digitalWrite(inputLeftFront, LOW);
 	digitalWrite(inputLeftBack, HIGH);
 	digitalWrite(inputRightFront, LOW);
 	digitalWrite(inputRightBack, HIGH);
-	
+
 }
 void carBackwards(int speed) {
 	Serial.print("driving backwards");
@@ -142,13 +91,13 @@ void carBackwards(int speed) {
 }
 void carTurnLeft(int speed, bool fast) {
 	Serial.print("Turning left");
-	
-	if(fast){
+
+	if (fast) {
 		analogWrite(enableLeft, speed);
 		analogWrite(enableRight, speed);
 		digitalWrite(inputLeftFront, HIGH);
 		digitalWrite(inputLeftBack, LOW);
-		digitalWrite(inputRightFront, LOW );
+		digitalWrite(inputRightFront, LOW);
 		digitalWrite(inputRightBack, HIGH);
 	}
 	else {
@@ -181,4 +130,4 @@ void carTurnRight(int speed, bool fast) {
 	}
 }
 
->>>>>>> origin/master
+
