@@ -1,5 +1,6 @@
-const int enableLeft = 5;
-const int enableRight = 6;
+
+const int enableLeft = 2;
+const int enableRight = 3;
 const int inputLeftFront = A0;
 const int inputLeftBack = A1;
 const int inputRightBack = A2;
@@ -10,7 +11,7 @@ void setup()
 	//start serial connection
 
 	Serial.begin(9600);
-	
+
 	pinMode(enableLeft, OUTPUT);
 	pinMode(enableRight, OUTPUT);
 	pinMode(inputLeftFront, OUTPUT);
@@ -29,12 +30,12 @@ void loop()
 {
 	if (Serial.available()) {
 		Serial.print("Serial is available");
-			//if the choise changed put the new value in the variable
-			choice = Serial.read();
-		
-			
+		//if the choise changed put the new value in the variable
+		choice = Serial.read();
+
+
 	}
-	
+
 
 	if (choice == '0') {
 		//stop the car
@@ -43,19 +44,27 @@ void loop()
 	else if (choice == '1') {
 		//drive car forward
 		//Serial.print("Driving car forward");
-		carForward(128);
+		carForward(200);
 	}
 	else if (choice == '2') {
-		//turn left
-		carTurnLeft(150, true);
+		//turn left slow
+		carTurnLeft(200, false);
 	}
 	else if (choice == '3') {
-		//turn right
-		carTurnRight(150, true);
+		//turn left fast
+		carTurnLeft(200, true);
 	}
 	else if (choice == '4') {
+		//turn right slow
+		carTurnRight(200, false);
+	}
+	else if (choice == '5') {
+		//turn right fast
+		carTurnRight(200, true);
+	}
+	else if (choice == '6') {
 		//drive car backwards
-		carBackwards(128);
+		carBackwards(200);
 	}
 
 
@@ -73,11 +82,11 @@ void carForward(int speed) {
 	Serial.print("driving forward");
 	analogWrite(enableLeft, speed);
 	analogWrite(enableRight, speed);
-	digitalWrite(inputLeftFront, LOW );
+	digitalWrite(inputLeftFront, LOW);
 	digitalWrite(inputLeftBack, HIGH);
 	digitalWrite(inputRightFront, LOW);
 	digitalWrite(inputRightBack, HIGH);
-	
+
 }
 void carBackwards(int speed) {
 	Serial.print("driving backwards");
@@ -90,13 +99,13 @@ void carBackwards(int speed) {
 }
 void carTurnLeft(int speed, bool fast) {
 	Serial.print("Turning left");
-	
-	if(fast){
+
+	if (fast) {
 		analogWrite(enableLeft, speed);
 		analogWrite(enableRight, speed);
 		digitalWrite(inputLeftFront, HIGH);
 		digitalWrite(inputLeftBack, LOW);
-		digitalWrite(inputRightFront, LOW );
+		digitalWrite(inputRightFront, LOW);
 		digitalWrite(inputRightBack, HIGH);
 	}
 	else {
@@ -128,4 +137,5 @@ void carTurnRight(int speed, bool fast) {
 		digitalWrite(inputRightBack, LOW);
 	}
 }
+
 
