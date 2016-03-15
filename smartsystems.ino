@@ -1,6 +1,6 @@
 
-const int enableLeft = 5;
-const int enableRight = 6;
+const int enableLeft = 2;
+const int enableRight = 3;
 const int inputLeftFront = A0;
 const int inputLeftBack = A1;
 const int inputRightBack = A2;
