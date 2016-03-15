@@ -44,7 +44,7 @@ void loop()
 	else if (choice == '1') {
 		//drive car forward
 		//Serial.print("Driving car forward");
-		carForward(128);
+		carForward(200);
 	}
 	else if (choice == '2') {
 		//turn left slow
@@ -64,7 +64,7 @@ void loop()
 	}
 	else if (choice == '6') {
 		//drive car backwards
-		carBackwards(128);
+		carBackwards(200);
 	}
 
 
