@@ -15,7 +15,6 @@
 #define LEDPin  13
 
 int maximumRange = 200;
-int minimumRange = 0;
 long duration, distance;
 int speed = 200;
 bool distanceStopped = false;
@@ -66,18 +65,18 @@ void loop()
 	delay(50);
 
 
-	/*if (distance <= 10 && distanceStopped == false) {
+	if (distance <= 10 && distanceStopped == false) {
 		choice = '0';
 		distanceStopped = true;
-	}*/
-	//else {
+	}
+	else {
 	if (Serial.available()) {
 		Serial.print("Serial is available");
 		//if the choise changed put the new value in the variable
 		choice = Serial.read();
-		//distanceStopped = false;
+		distanceStopped = false;
 
-	//}
+	}
 	}
 	if (choice == '0') {
 		//stop the car
@@ -85,7 +84,6 @@ void loop()
 	}
 	else if (choice == '1') {
 		//drive car forward
-		//Serial.print("Driving car forward");
 		carMove(carForward);
 	}
 	else if (choice == '2') {
