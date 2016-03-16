@@ -1,3 +1,4 @@
+
 #define enableLeft 2
 #define enableRight 3
 #define inputLeftFront  A0
@@ -9,13 +10,13 @@
 #define sensEchoRight 11
 #define sensTrigRight 10
 #define sensEchoLeft 7
-#define sensTrigright 6
+#define sensTrigLeft 6
 #define sensEchoFront 13
 #define sensTrigFront 12
 #define LEDPin  13
 
-int maximumRange = 200;
-long duration, distance;
+
+long duration, disForSens, disBackSens, disLeftSens, disRightSens;
 int speed = 200;
 bool distanceStopped = false;
 int carstop[] = { 0,0,LOW,LOW,LOW,LOW };
@@ -33,7 +34,7 @@ void setup()
 	Serial.begin(9600);
 	pinMode(sensTrigBack, OUTPUT);
 	pinMode(sensTrigRight, OUTPUT);
-	pinMode(sensTrigright, OUTPUT);
+	pinMode(sensTrigLeft, OUTPUT);
 	pinMode(sensTrigFront, OUTPUT);
 	pinMode(sensEchoBack, INPUT);
 	pinMode(sensEchoRight, INPUT);
@@ -52,31 +53,35 @@ void setup()
 void loop()
 {
 
-	digitalWrite(sensTrigFront, LOW);
-	delayMicroseconds(2);
-	digitalWrite(sensTrigFront, HIGH);
-	delayMicroseconds(10);
-	digitalWrite(sensTrigFront, LOW);
-	duration = pulseIn(sensEchoFront, HIGH);
-
-	distance = duration / 58.2;
-
-	Serial.println(distance);
-	delay(50);
+	
 
 
-	if (distance <= 10 && distanceStopped == false) {
+//Serial.println(disForSens);
+	disForSens = getDistance(sensTrigFront, sensEchoFront);
+	printDistante(1, disForSens);
+	/*delay(150);*/
+	disBackSens = getDistance(sensTrigBack, sensEchoBack);
+	printDistante(2, disBackSens);
+	//delay(150);
+	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
+	printDistante(3, disLeftSens);
+	//delay(150);
+	disRightSens = getDistance(sensTrigRight, sensEchoRight);
+	printDistante(4, disRightSens);
+	//delay(500);
+
+	if (disForSens <= 10 && distanceStopped == false) {
 		choice = '0';
 		distanceStopped = true;
 	}
 	else {
-	if (Serial.available()) {
-		Serial.print("Serial is available");
-		//if the choise changed put the new value in the variable
-		choice = Serial.read();
-		distanceStopped = false;
+		if (Serial.available()) {
+			Serial.print("Serial is available");
+			//if the choise changed put the new value in the variable
+			choice = Serial.read();
+			distanceStopped = false;
 
-	}
+		}
 	}
 	if (choice == '0') {
 		//stop the car
@@ -110,14 +115,35 @@ void loop()
 
 }
 
+long getDistance(int trigPin, int echoPin) {
+	digitalWrite(trigPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trigPin, LOW);
+	unsigned long pulseTime = pulseIn(echoPin, HIGH);
+	int distance = pulseTime / 58;
+	return distance;
+}
+void printDistante(int id, int dist) {
+	Serial.print(id);
+	if (dist >= 120 || dist <= 0) {
+		Serial.println("Out of range");
+	}
+	else {
+		for (int i = 0; i <= dist; i++) {
+			Serial.print('-');
 
+		}
+		Serial.print(dist, DEC);
+		Serial.println("cm");
+	}
+}
 void carMove(int movement[]) {
-		analogWrite(enableLeft, movement[0]);
-		analogWrite(enableRight, movement[1]);
-		digitalWrite(inputLeftFront, movement[2]);
-		digitalWrite(inputLeftBack, movement[3]);
-		digitalWrite(inputRightFront, movement[4]);
-		digitalWrite(inputRightBack, movement[5]);
+	analogWrite(enableLeft, movement[0]);
+	analogWrite(enableRight, movement[1]);
+	digitalWrite(inputLeftFront, movement[2]);
+	digitalWrite(inputLeftBack, movement[3]);
+	digitalWrite(inputRightFront, movement[4]);
+	digitalWrite(inputRightBack, movement[5]);
 }
 
 
