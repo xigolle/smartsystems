@@ -27,11 +27,13 @@ int carLeft[] = { speed,0,HIGH,LOW,LOW,LOW };
 int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { 0,speed,LOW,LOW,HIGH,LOW };
 char choice;
+
 void setup()
 {
 	//start serial connection
 
 	Serial.begin(9600);
+  Serial2.begin(9600);
 	pinMode(sensTrigBack, OUTPUT);
 	pinMode(sensTrigRight, OUTPUT);
 	pinMode(sensTrigLeft, OUTPUT);
@@ -52,14 +54,17 @@ void setup()
 
 void loop()
 {
+  
+	if (Serial2.available()) {
+    choice = Serial2.read();  
+		Serial.println(choice);
+    }
 
-	
 
-
-//Serial.println(disForSens);
+/*//Serial.println(disForSens);
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
 	printDistante(1, disForSens);
-	/*delay(150);*/
+	//delay(150);
 	disBackSens = getDistance(sensTrigBack, sensEchoBack);
 	printDistante(2, disBackSens);
 	//delay(150);
@@ -69,49 +74,58 @@ void loop()
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
 	printDistante(4, disRightSens);
 	//delay(500);
-
-	if (disForSens <= 10 && distanceStopped == false) {
+*/
+	/*if (disForSens <= 10 && distanceStopped == false) {
 		choice = '0';
 		distanceStopped = true;
 	}
 	else {
-		if (Serial.available()) {
+		if (Serial2.available()) {
 			Serial.print("Serial is available");
 			//if the choise changed put the new value in the variable
 			choice = Serial.read();
+     Serial.println(choice);
 			distanceStopped = false;
 
 		}
-	}
+	}*/
 	if (choice == '0') {
 		//stop the car
+    Serial.println("stop");
 		carMove(carstop);
 	}
 	else if (choice == '1') {
 		//drive car forward
+   Serial.println("forward");
 		carMove(carForward);
 	}
 	else if (choice == '2') {
 		//turn left slow
+    Serial.println("slow left");
 		carMove(carLeft);
 	}
 	else if (choice == '3') {
 		//turn left fast
+    Serial.println("fast left");
 		carMove(carLeftAs);
 	}
 	else if (choice == '4') {
 		//turn right slow
+    Serial.println("slow right");
 		carMove(carRight);
 	}
 	else if (choice == '5') {
 		//turn right fast
+    Serial.println("fast right");
 		carMove(carRightAs);
 	}
 	else if (choice == '6') {
 		//drive car backwards
+   Serial.println("backwards");
 		carMove(carBackward);
 	}
 
+  
 
 }
 
