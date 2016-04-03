@@ -69,31 +69,25 @@ void loop()
     choice = Serial2.read();  
 		Serial.println(choice);
     }
+	if (Serial.available()) {
+		choice = Serial.read();
+		Serial.println(choice);
+	}
 
 
-/*//Serial.println(disForSens);
-=======
-	//hier onder worden al onze 4 sensoren uitgelezen en uitgeprint.
-	//getDistance(trigpin,echopin) heeft de echo en de trigger pin nodig en zal deze sensor aanroepen en aciveren.
-	//De functie returned een afstand in cm die dan in de juiste variable wordt gezet.
->>>>>>> origin/ReadingSensor
+
+
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	//printDistance (id , dist) verwacht een id zodat we de output makkelijker kunnen herkennen en een distance.
-	//De functie zal een visuele weergave geven van de afstand op basis van de distance en zla ook de distance( het nummer) outputten
 	printDistante(1, disForSens);
-<<<<<<< HEAD
-	//delay(150);
-=======
->>>>>>> origin/ReadingSensor
 	disBackSens = getDistance(sensTrigBack, sensEchoBack);
 	printDistante(2, disBackSens);
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
 	printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
 	printDistante(4, disRightSens);
-<<<<<<< HEAD
-	//delay(500);
-*/
+
+	delay(1000);
+
 	/*if (disForSens <= 10 && distanceStopped == false) {
 =======
 	//hier wordt er gecontroleerd of dat de bij de voorste sensor een object binnen 10 cm zit. 
