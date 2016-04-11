@@ -34,13 +34,13 @@ int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { 0,speed,LOW,LOW,HIGH,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice;
-
+char tempChoice;
 void setup()
 {
 	//start serial connection
 
 	Serial.begin(9600);
-  Serial2.begin(9600);
+	Serial2.begin(9600);
 
 	//alle pinnen worden op de juist pinmode gezet
 	//zo worden alle echo pin van de sensoren op INPUt gezet
@@ -64,33 +64,36 @@ void setup()
 
 void loop()
 {
-  
+
 	if (Serial2.available()) {
-    choice = Serial2.read();  
+		tempChoice = Serial2.read();
 		Serial.println(choice);
-    }
-	if (Serial.available()) {
-		choice = Serial.read();
-		Serial.println(choice);
+	}
+	if (!(tempChoice == 1 && disForSens <= 15)) {
+		choice = tempChoice;
+	}
+	else if (!(tempChoice == 6 && disBackSens <= 15)) {
+		choice = tempChoice;
 	}
 
 
 
 
+
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	printDistante(1, disForSens);
+	//printDistante(1, disForSens);
 	disBackSens = getDistance(sensTrigBack, sensEchoBack);
-	printDistante(2, disBackSens);
+	//printDistante(2, disBackSens);
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
-	printDistante(3, disLeftSens);
+	//printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
-	printDistante(4, disRightSens);
+	//printDistante(4, disRightSens);
 
 	delay(1000);
 
 	/*if (disForSens <= 10 && distanceStopped == false) {
 =======
-	//hier wordt er gecontroleerd of dat de bij de voorste sensor een object binnen 10 cm zit. 
+	//hier wordt er gecontroleerd of dat de bij de voorste sensor een object binnen 10 cm zit.
 	//zoja zal de auto stoppen
 	if (disForSens <= 10 && distanceStopped == false) {
 >>>>>>> origin/ReadingSensor
@@ -101,9 +104,9 @@ void loop()
 	else {
 		if (Serial2.available()) {
 			Serial.print("Serial is available");
-			
+
 			choice = Serial.read();
-     Serial.println(choice);
+	 Serial.println(choice);
 			distanceStopped = false;
 
 		}
@@ -123,41 +126,41 @@ void loop()
 	*/
 	if (choice == '0') {
 		//stop the car
-    Serial.println("stop");
+		Serial.println("stop");
 		carMove(carstop);
 	}
 	else if (choice == '1') {
 		//drive car forward
-   Serial.println("forward");
+		Serial.println("forward");
 		carMove(carForward);
 	}
 	else if (choice == '2') {
 		//turn left slow
-    Serial.println("slow left");
+		Serial.println("slow left");
 		carMove(carLeft);
 	}
 	else if (choice == '3') {
 		//turn left fast
-    Serial.println("fast left");
+		Serial.println("fast left");
 		carMove(carLeftAs);
 	}
 	else if (choice == '4') {
 		//turn right slow
-    Serial.println("slow right");
+		Serial.println("slow right");
 		carMove(carRight);
 	}
 	else if (choice == '5') {
 		//turn right fast
-    Serial.println("fast right");
+		Serial.println("fast right");
 		carMove(carRightAs);
 	}
 	else if (choice == '6') {
 		//drive car backwards
-   Serial.println("backwards");
+		Serial.println("backwards");
 		carMove(carBackward);
 	}
 
-  
+
 
 }
 //getDistance verwacht een trigger pin en een echo pin.
