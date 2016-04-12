@@ -29,9 +29,9 @@ int carstop[] = { 0,0,LOW,LOW,LOW,LOW };
 int carForward[] = { speed,speed,LOW,HIGH,LOW,HIGH };
 int carBackward[] = { speed, speed,HIGH,LOW,HIGH,LOW };
 int carLeftAs[] = { speed,speed,HIGH,LOW,LOW,HIGH };
-int carLeft[] = { speed,0,HIGH,LOW,LOW,LOW };
+int carLeft[] = { 0,speed,LOW,LOW,LOW,HIGH };
 int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
-int carRight[] = { 0,speed,LOW,LOW,HIGH,LOW };
+int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice;
 char tempChoice;
@@ -67,29 +67,35 @@ void loop()
 
 	if (Serial2.available()) {
 		tempChoice = Serial2.read();
-		Serial.println(choice);
+		Serial.println(tempChoice);
 	}
-	if (!(tempChoice == 1 && disForSens <= 15)) {
-		choice = tempChoice;
-	}
-	else if (!(tempChoice == 6 && disBackSens <= 15)) {
-		choice = tempChoice;
-	}
+	
 
 
 
 
 
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	//printDistante(1, disForSens);
+	printDistante(1, disForSens);
 	disBackSens = getDistance(sensTrigBack, sensEchoBack);
-	//printDistante(2, disBackSens);
+	printDistante(2, disBackSens);
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
 	//printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
 	//printDistante(4, disRightSens);
-
-	delay(1000);
+	Serial.println(tempChoice);
+	if ((tempChoice == '1' && disForSens <= 15) || (choice == '1' && disForSens <= 15)) {
+		choice = '0';
+		Serial.println("eerste if");
+	}
+	else if ((tempChoice == '6' && disBackSens <= 15) || (choice == '6' && disBackSens <= 15)) {
+		choice = '0';
+		Serial.println("tweede if");
+	}
+	else {
+		choice = tempChoice;
+		//Serial.println("else");
+	}
 
 	/*if (disForSens <= 10 && distanceStopped == false) {
 =======
