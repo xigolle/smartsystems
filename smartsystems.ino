@@ -65,7 +65,7 @@ void setup()
 
 void loop()
 {
-
+	
 	if (Serial2.available()) {
 		tempChoice = Serial2.read();
 		Serial.println(tempChoice);
