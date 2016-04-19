@@ -1,5 +1,6 @@
 //definieer alle variabelen die later gebruikt worden in de code
 //alle variabelen zijn afgestemd op basis van de pin layout.
+#include "Bluetooth.h"
 #define enableLeft 2
 #define enableRight 3
 #define inputLeftFront  A0
@@ -169,6 +170,7 @@ void loop()
 
 
 }
+
 //getDistance verwacht een trigger pin en een echo pin.
 //Er wordt eerst een HIGH gegeven om een trig te versturen
 //daarna wordt er even gewacht en de trigger gestopt ( LOW)
