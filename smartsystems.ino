@@ -1,3 +1,5 @@
+#include <SimpleTimer.h>
+
 //definieer alle variabelen die later gebruikt worden in de code
 //alle variabelen zijn afgestemd op basis van de pin layout.
 #define enableLeft 2
@@ -34,7 +36,11 @@ int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice;
-char tempChoice;
+char tempChoice = '1';
+
+SimpleTimer timer;
+long microseconds = -5000;
+
 void setup()
 {
 	//start serial connection
@@ -60,14 +66,25 @@ void setup()
 	pinMode(inputRightBack, OUTPUT);
 	pinMode(inputRightFront, OUTPUT);
 
+
+  timer.setTimeout(5000, stopDraai);
+}
+
+void stopDraai() {
+  Serial.println("in stop");
+  choice = '0';
 }
 
 void loop()
 {
-
+  //Serial.println("voor timer");
+  
+  
+  
+  //Serial.println("achter timer");
 	if (Serial2.available()) {
-		tempChoice = Serial2.read();
-		Serial.println(tempChoice);
+		//tempChoice = Serial2.read();
+		//Serial.println(tempChoice);
 	}
 	
 
@@ -77,16 +94,26 @@ void loop()
 
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
 	printDistante(1, disForSens);
-	disBackSens = getDistance(sensTrigBack, sensEchoBack);
-	printDistante(2, disBackSens);
+	//disBackSens = getDistance(sensTrigBack, sensEchoBack);
+	//printDistante(2, disBackSens);
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
-	//printDistante(3, disLeftSens);
+	printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
-	//printDistante(4, disRightSens);
-	Serial.println(tempChoice);
+	printDistante(4, disRightSens);
+
+  
+   
+	//Serial.println(tempChoice);
 	if ((tempChoice == '1' && disForSens <= 15) || (choice == '1' && disForSens <= 15)) {
-		choice = '0';
+		//choice = '0';
 		Serial.println("eerste if");
+    if (disLeftSens >= disRightSens) {
+        //timer.setTimeout(400, stopDraai);
+        choice = '3';
+        //timer.run();
+        delayMicroseconds(400);
+        choice = '0';
+    }
 	}
 	else if ((tempChoice == '6' && disBackSens <= 15) || (choice == '6' && disBackSens <= 15)) {
 		choice = '0';
@@ -191,5 +218,19 @@ void carMove(int movement[]) {
 	digitalWrite(inputRightFront, movement[4]);
 	digitalWrite(inputRightBack, movement[5]);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
