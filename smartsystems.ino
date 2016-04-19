@@ -96,29 +96,6 @@ void loop()
 		choice = tempChoice;
 		//Serial.println("else");
 	}
-
-	/*if (disForSens <= 10 && distanceStopped == false) {
-=======
-	//hier wordt er gecontroleerd of dat de bij de voorste sensor een object binnen 10 cm zit.
-	//zoja zal de auto stoppen
-	if (disForSens <= 10 && distanceStopped == false) {
->>>>>>> origin/ReadingSensor
-		choice = '0';
-		distanceStopped = true;
-	}
-	//hier wordt er gekeken wanneer het bovenstaande niet waar is of er al weer een commando ingegeven is.
-	else {
-		if (Serial2.available()) {
-			Serial.print("Serial is available");
-
-			choice = Serial.read();
-	 Serial.println(choice);
-			distanceStopped = false;
-
-		}
-<<<<<<< HEAD
-	}*/
-	//}
 	//hieronder wordt gekeken welke keuze gemaakt is en op basis hiervan gaat de auto actie ondernemen
 	//dit wordt nog in een functie geplaatst als ook omgevormd naar een switch statement.
 	/*
