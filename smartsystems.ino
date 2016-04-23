@@ -92,7 +92,7 @@ void loop()
 	//Serial.println(tempChoice);
 	if ((tempChoice == '1' && disForSens <= stopDistance) || (choice == '1' && disForSens <= stopDistance)||(tempChoice == '1' && disForLeftSens <= stopDistance) || (choice == '1' && disForLeftSens <= stopDistance)||(tempChoice == '1' && disForRightSens <= stopDistance) || (choice == '1' && disForRightSens <= stopDistance)) {
 		Serial.println("eerste if");
-    if (disLeftSens >= disRightSens) {
+    if (disLeftSens >= disRightSens && disForLeftSens >= disForRightSens) {
         choice = '3';
         Serial.println(choice);
         actie();
