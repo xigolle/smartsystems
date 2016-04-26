@@ -37,7 +37,7 @@ int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice;
 char tempChoice = '1';
-int stopDistance = 20;
+int stopDistance = 15;
 
 
 
@@ -78,15 +78,15 @@ void loop()
 {
 	
 	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	printDistante(1, disForSens);
+	//printDistante(1, disForSens);
 	disForLeftSens = getDistance(sensTrigForLeft, sensEchoForLeft);
-	printDistante(2, disForLeftSens);
+	//printDistante(2, disForLeftSens);
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
 	//printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
 	//printDistante(4, disRightSens);
   disForRightSens = getDistance(sensTrigForRight, sensEchoForRight);
-  printDistante(5, disForRightSens);
+  //printDistante(5, disForRightSens);
   
    
 	//Serial.println(tempChoice);
@@ -94,19 +94,19 @@ void loop()
 		Serial.println("eerste if");
     if (disLeftSens >= disRightSens && disForLeftSens >= disForRightSens) {
         choice = '3';
-        Serial.println(choice);
+        //Serial.println(choice);
         actie();
     } else {
       choice = '5';
-      Serial.println(choice);
+      //Serial.println(choice);
       actie();
     }
     delay(400);
-    choice = '1';
-    Serial.println(choice);
+    choice = '0';
+    //Serial.println(choice);
 	}
 	else {
-		choice = tempChoice;
+		choice = '1';
 	}
  actie();
 }
@@ -201,7 +201,7 @@ void printDistante(int id, int dist) {
 //de array wordt uitgelezen en op de goeie pin uitgevoerd waardoor de auto dus zal bewegen.
 
 void carMove(int movement[]) {
-  Serial.println("in carmove");
+  //Serial.println("in carmove");
 	analogWrite(enableLeft, movement[0]);
 	analogWrite(enableRight, movement[1]);
 	digitalWrite(inputLeftFront, movement[2]);
