@@ -35,9 +35,9 @@ int carLeft[] = { 0,speed,LOW,LOW,LOW,HIGH };
 int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
-char choice;
+char choice = '1';
 char tempChoice = '1';
-int stopDistance = 15;
+int stopDistance = 10;
 
 
 
@@ -76,23 +76,23 @@ void setup()
 
 void loop()
 {
-	
-	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	//printDistante(1, disForSens);
-	disForLeftSens = getDistance(sensTrigForLeft, sensEchoForLeft);
-	//printDistante(2, disForLeftSens);
+		
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
 	//printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
 	//printDistante(4, disRightSens);
   disForRightSens = getDistance(sensTrigForRight, sensEchoForRight);
   //printDistante(5, disForRightSens);
+  disForSens = getDistance(sensTrigFront, sensEchoFront);
+  //printDistante(1, disForSens);
+  disForLeftSens = getDistance(sensTrigForLeft, sensEchoForLeft);
+  //printDistante(2, disForLeftSens);
   
    
 	//Serial.println(tempChoice);
 	if ((tempChoice == '1' && disForSens <= stopDistance) || (choice == '1' && disForSens <= stopDistance)||(tempChoice == '1' && disForLeftSens <= stopDistance) || (choice == '1' && disForLeftSens <= stopDistance)||(tempChoice == '1' && disForRightSens <= stopDistance) || (choice == '1' && disForRightSens <= stopDistance)) {
-		Serial.println("eerste if");
-    if (disLeftSens >= disRightSens && disForLeftSens >= disForRightSens) {
+		//Serial.println("eerste if");
+    if (disLeftSens >= disRightSens /*|| disForLeftSens >= disForRightSens*/) {
         choice = '3';
         //Serial.println(choice);
         actie();
@@ -101,7 +101,7 @@ void loop()
       //Serial.println(choice);
       actie();
     }
-    delay(400);
+    delay(200);
     choice = '0';
     //Serial.println(choice);
 	}
