@@ -37,7 +37,7 @@ int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice = '1';
 char tempChoice = '1';
-int stopDistance = 10;
+int stopDistance = 15;
 
 
 
@@ -70,6 +70,7 @@ void setup()
 	pinMode(inputRightFront, OUTPUT);
 
 
+
 }
 
 
@@ -89,12 +90,12 @@ void loop()
   //printDistante(2, disForLeftSens);
   
    
-	//Serial.println(tempChoice);
+	Serial.println(tempChoice);
 	if ((tempChoice == '1' && disForSens <= stopDistance) || (choice == '1' && disForSens <= stopDistance)||(tempChoice == '1' && disForLeftSens <= stopDistance) || (choice == '1' && disForLeftSens <= stopDistance)||(tempChoice == '1' && disForRightSens <= stopDistance) || (choice == '1' && disForRightSens <= stopDistance)) {
 		//Serial.println("eerste if");
     if (disLeftSens >= disRightSens /*|| disForLeftSens >= disForRightSens*/) {
         choice = '3';
-        //Serial.println(choice);
+        Serial.println(choice);
         actie();
     } else {
       choice = '5';
