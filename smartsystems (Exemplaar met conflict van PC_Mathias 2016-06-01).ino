@@ -36,16 +36,17 @@ int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
 char choice = '1';
-int stopDistance = 10;
-bool TANK = false;
+char tempChoice = '1';
+int stopDistance = 15;
+
 
 
 
 void setup()
 {
 	//start serial connection
-  Serial.begin(9600);
-	Serial3.begin(9600);
+
+	Serial.begin(9600);
 	Serial2.begin(9600);
 
 	//alle pinnen worden op de juist pinmode gezet
@@ -76,20 +77,7 @@ void setup()
 
 void loop()
 {
-
-
-  if (Serial2.available()) {
-    choice = Serial2.read();
-    Serial3.print(choice);
-    Serial.print(choice);
-
-    TANK = true;
-  }
-
-  if (!TANK) { 
-  //disLeftSens = 0 , disRightSens =0, disForRightSens = 0, disForSens =0, disForLeftSens = 0;
-//int i = 0;
-//while (i<4) {  
+		
 	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
 	//printDistante(3, disLeftSens);
 	disRightSens = getDistance(sensTrigRight, sensEchoRight);
@@ -100,23 +88,20 @@ void loop()
   //printDistante(1, disForSens);
   disForLeftSens = getDistance(sensTrigForLeft, sensEchoForLeft);
   //printDistante(2, disForLeftSens);
-// i++;
-//}
- //disLeftSens = disLeftSens/i;
-  //disRightSens = disRightSens/i;
-// disForRightSens = disForRightSens/i;
- // disForSens = disForSens/i;
-  //disForLeftSens = disForLeftSens/i; 
-
- 
-	if (disForSens <= stopDistance || disForLeftSens <= stopDistance || disForRightSens <= stopDistance) {
+  
+   
+	Serial.println(tempChoice);
+	if ((tempChoice == '1' && disForSens <= stopDistance) || (choice == '1' && disForSens <= stopDistance)||(tempChoice == '1' && disForLeftSens <= stopDistance) || (choice == '1' && disForLeftSens <= stopDistance)||(tempChoice == '1' && disForRightSens <= stopDistance) || (choice == '1' && disForRightSens <= stopDistance)) {
 		//Serial.println("eerste if");
     if (disLeftSens >= disRightSens /*|| disForLeftSens >= disForRightSens*/) {
         choice = '3';
+        Serial.println(choice);
+        actie();
     } else {
       choice = '5';
+      //Serial.println(choice);
+      actie();
     }
-    actie();
     delay(200);
     choice = '0';
     //Serial.println(choice);
@@ -124,8 +109,7 @@ void loop()
 	else {
 		choice = '1';
 	}
-  }
-  actie();
+ actie();
 }
 	//hieronder wordt gekeken welke keuze gemaakt is en op basis hiervan gaat de auto actie ondernemen
 	//dit wordt nog in een functie geplaatst als ook omgevormd naar een switch statement.
@@ -141,37 +125,37 @@ void loop()
 void actie() {
   if (choice == '0') {
     //stop the car
-    //Serial.println("stop");
+    Serial.println("stop");
     carMove(carstop);
   }
   else if (choice == '1') {
     //drive car forward
-    //Serial.println("forward");
+    Serial.println("forward");
     carMove(carForward);
   }
   else if (choice == '2') {
     //turn left slow
-    //Serial.println("slow left");
+    Serial.println("slow left");
     carMove(carLeft);
   }
   else if (choice == '3') {
     //turn left fast
-    //Serial.println("fast left");
+    Serial.println("fast left");
     carMove(carLeftAs);
   }
   else if (choice == '4') {
     //turn right slow
-    //Serial.println("slow right");
+    Serial.println("slow right");
     carMove(carRight);
   }
   else if (choice == '5') {
     //turn right fast
-    //Serial.println("fast right");
+    Serial.println("fast right");
     carMove(carRightAs);
   }
   else if (choice == '6') {
     //drive car backwards
-    //Serial.println("backwards");
+    Serial.println("backwards");
     carMove(carBackward);
   }
 }
@@ -226,7 +210,6 @@ void carMove(int movement[]) {
 	digitalWrite(inputRightFront, movement[4]);
 	digitalWrite(inputRightBack, movement[5]);
 }
-
 
 
 
