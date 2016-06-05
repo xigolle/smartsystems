@@ -6,8 +6,10 @@
 #define inputLeftBack  A1
 #define inputRightBack  A2
 #define inputRightFront  A3
-#define sensEchoBack  9
-#define sensTrigBack  8
+#define sensEchoForLeft  9
+#define sensTrigForLeft  8
+#define sensTrigForRight 5
+#define sensEchoForRight 4
 #define sensEchoRight 11
 #define sensTrigRight 10
 #define sensEchoLeft 7
@@ -16,7 +18,7 @@
 #define sensTrigFront 12
 
 //variabelen om de afstand van alle sensoren te bewaren.
-long  disForSens, disBackSens, disLeftSens, disRightSens;
+long  disForSens, disForLeftSens, disLeftSens, disRightSens, disForRightSens;
 //de snelheid dat de wielen gaan draaien
 int speed = 200;
 //bool om aan te geven of de auto al een keer gestopt is of niet
@@ -33,23 +35,31 @@ int carLeft[] = { 0,speed,LOW,LOW,LOW,HIGH };
 int carRightAs[] = { speed,speed,LOW,HIGH,HIGH,LOW };
 int carRight[] = { speed,0,LOW,HIGH,LOW,LOW };
 //variabele om de keuze te onthouden die wordt doorgegeven van uit de serial
-char choice;
-char tempChoice;
+char choice = '1';
+//variabele die de afstand bepaald, waarop de auto gaat reageren
+int stopDistance = 10;
+//variabele die ervoor zorgt dat de auto stopt met autonoom rijden indien hij serieel iets binnekrijgt
+bool TANK = false;
+
+
+
 void setup()
 {
 	//start serial connection
-
-	Serial.begin(9600);
+  Serial.begin(9600);
+	Serial3.begin(9600);
 	Serial2.begin(9600);
 
 	//alle pinnen worden op de juist pinmode gezet
 	//zo worden alle echo pin van de sensoren op INPUt gezet
 	//de rest zoals de output van de H-brug en de trigger van de sensoren worden op OUTPUT gezet
-	pinMode(sensTrigBack, OUTPUT);
+	pinMode(sensTrigForLeft, OUTPUT);
 	pinMode(sensTrigRight, OUTPUT);
 	pinMode(sensTrigLeft, OUTPUT);
 	pinMode(sensTrigFront, OUTPUT);
-	pinMode(sensEchoBack, INPUT);
+  pinMode(sensTrigForRight, OUTPUT);
+  pinMode(sensEchoForRight, INPUT);
+	pinMode(sensEchoForLeft, INPUT);
 	pinMode(sensEchoRight, INPUT);
 	pinMode(sensEchoLeft, INPUT);
 	pinMode(sensEchoFront, INPUT);
@@ -60,65 +70,61 @@ void setup()
 	pinMode(inputRightBack, OUTPUT);
 	pinMode(inputRightFront, OUTPUT);
 
+
+
 }
+
+
 
 void loop()
 {
 
-	if (Serial2.available()) {
-		tempChoice = Serial2.read();
-		Serial.println(tempChoice);
-	}
-	
+ //In deze if statement wordt de informatie die de bluetooth module binnekrijgt ingelezen
+  if (Serial2.available()) {
+    //keuze wordt serieel ingelezen
+    choice = Serial2.read();
+    //via dit wordt de keuze doorgestuurd naar de derde auto in de ketting
+    Serial3.print(choice);
+    //de keuze wordt in de eigen seriële monitor geprint
+    Serial.print(choice);
 
+    //We zetten autonoom uit en zeggend at we bestuurd worden door TANK (auto groep Jeroen, zion en Kelvin) (of de app)
+    TANK = true;
+  }
 
+  //indien we nog niets binnengekregen hebben van de eerste auto in de ketting (of van de app)
+  if (!TANK) {   
+    //In dit gedeelte worden de waarden van de sensoren ingelezen
+	  disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
+	  //printDistante(3, disLeftSens);
+	  disRightSens = getDistance(sensTrigRight, sensEchoRight);
+	  //printDistante(4, disRightSens);
+    disForRightSens = getDistance(sensTrigForRight, sensEchoForRight);
+    //printDistante(5, disForRightSens);
+    disForSens = getDistance(sensTrigFront, sensEchoFront);
+    //printDistante(1, disForSens);
+    disForLeftSens = getDistance(sensTrigForLeft, sensEchoForLeft);
+    //printDistante(2, disForLeftSens);
 
-
-
-	disForSens = getDistance(sensTrigFront, sensEchoFront);
-	printDistante(1, disForSens);
-	disBackSens = getDistance(sensTrigBack, sensEchoBack);
-	printDistante(2, disBackSens);
-	disLeftSens = getDistance(sensTrigLeft, sensEchoLeft);
-	//printDistante(3, disLeftSens);
-	disRightSens = getDistance(sensTrigRight, sensEchoRight);
-	//printDistante(4, disRightSens);
-	Serial.println(tempChoice);
-	if ((tempChoice == '1' && disForSens <= 15) || (choice == '1' && disForSens <= 15)) {
-		choice = '0';
-		Serial.println("eerste if");
-	}
-	else if ((tempChoice == '6' && disBackSens <= 15) || (choice == '6' && disBackSens <= 15)) {
-		choice = '0';
-		Serial.println("tweede if");
-	}
-	else {
-		choice = tempChoice;
-		//Serial.println("else");
-	}
-
-	/*if (disForSens <= 10 && distanceStopped == false) {
-=======
-	//hier wordt er gecontroleerd of dat de bij de voorste sensor een object binnen 10 cm zit.
-	//zoja zal de auto stoppen
-	if (disForSens <= 10 && distanceStopped == false) {
->>>>>>> origin/ReadingSensor
-		choice = '0';
-		distanceStopped = true;
-	}
-	//hier wordt er gekeken wanneer het bovenstaande niet waar is of er al weer een commando ingegeven is.
-	else {
-		if (Serial2.available()) {
-			Serial.print("Serial is available");
-
-			choice = Serial.read();
-	 Serial.println(choice);
-			distanceStopped = false;
-
-		}
-<<<<<<< HEAD
-	}*/
-	//}
+    //We kijken of 1 van de voorste sensoren te dicht bij een obstakel is
+	  if (disForSens <= stopDistance || disForLeftSens <= stopDistance || disForRightSens <= stopDistance) {
+      //als de linkersensor meer plaats ziet dan de rechtersensor, gaan we naar links. Dit gebeurt ook als beide afstanden even groot zijn. Indien dit niet het geval is, gaan we naar rechts
+      if (disLeftSens >= disRightSens) {
+          choice = '3';
+      } else {
+        choice = '5';
+      }
+      actie();
+      //dit zorgt ervoor dat de auto voor 200microseconden blijft draaien waarna hij stopt
+      delay(200);
+      choice = '0';
+	  }
+	  else {
+		  choice = '1';
+	  }
+  }
+  actie();
+}
 	//hieronder wordt gekeken welke keuze gemaakt is en op basis hiervan gaat de auto actie ondernemen
 	//dit wordt nog in een functie geplaatst als ook omgevormd naar een switch statement.
 	/*
@@ -130,45 +136,48 @@ void loop()
 	5 = auto naar rechts laten draaien om zijn as ( 2 wielen draaien in tegenovergestelde richting).
 	6 = auto achteruit laten rijden.
 	*/
-	if (choice == '0') {
-		//stop the car
-		Serial.println("stop");
-		carMove(carstop);
-	}
-	else if (choice == '1') {
-		//drive car forward
-		Serial.println("forward");
-		carMove(carForward);
-	}
-	else if (choice == '2') {
-		//turn left slow
-		Serial.println("slow left");
-		carMove(carLeft);
-	}
-	else if (choice == '3') {
-		//turn left fast
-		Serial.println("fast left");
-		carMove(carLeftAs);
-	}
-	else if (choice == '4') {
-		//turn right slow
-		Serial.println("slow right");
-		carMove(carRight);
-	}
-	else if (choice == '5') {
-		//turn right fast
-		Serial.println("fast right");
-		carMove(carRightAs);
-	}
-	else if (choice == '6') {
-		//drive car backwards
-		Serial.println("backwards");
-		carMove(carBackward);
-	}
-
-
-
+void actie() {
+  if (choice == '0') {
+    //stop the car
+    //Serial.println("stop");
+    carMove(carstop);
+  }
+  else if (choice == '1') {
+    //drive car forward
+    //Serial.println("forward");
+    carMove(carForward);
+  }
+  else if (choice == '2') {
+    //turn left slow
+    //Serial.println("slow left");
+    carMove(carLeft);
+  }
+  else if (choice == '3') {
+    //turn left fast
+    //Serial.println("fast left");
+    carMove(carLeftAs);
+  }
+  else if (choice == '4') {
+    //turn right slow
+    //Serial.println("slow right");
+    carMove(carRight);
+  }
+  else if (choice == '5') {
+    //turn right fast
+    //Serial.println("fast right");
+    carMove(carRightAs);
+  }
+  else if (choice == '6') {
+    //drive car backwards
+    //Serial.println("backwards");
+    carMove(carBackward);
+  }
 }
+  
+
+
+
+
 //getDistance verwacht een trigger pin en een echo pin.
 //Er wordt eerst een HIGH gegeven om een trig te versturen
 //daarna wordt er even gewacht en de trigger gestopt ( LOW)
@@ -176,7 +185,7 @@ void loop()
 // hierna wordt de pulse tijd omgezet naar afstand (cm) en dit wordt gereturned.
 long getDistance(int trigPin, int echoPin) {
 	digitalWrite(trigPin, HIGH);
-	delayMicroseconds(10);
+	delayMicroseconds(5);
 	digitalWrite(trigPin, LOW);
 	unsigned long pulseTime = pulseIn(echoPin, HIGH);
 	int distance = pulseTime / 58;
@@ -190,17 +199,17 @@ long getDistance(int trigPin, int echoPin) {
 //en daarna ook nog de afstand ( in getal) en de maat (cm)
 void printDistante(int id, int dist) {
 	Serial.print(id);
-	if (dist >= 120 || dist <= 0) {
+	/*if (dist >= 120 || dist <= 0) {
 		Serial.println("Out of range");
 	}
-	else {
+	else {*/
 		for (int i = 0; i <= dist; i++) {
 			Serial.print('-');
 
 		}
 		Serial.print(dist, DEC);
 		Serial.println("cm");
-	}
+	//}
 }
 //carMove verwachten een array.
 //in deze array staan al de acties die de auto moet doen om te bewegen.
@@ -214,5 +223,20 @@ void carMove(int movement[]) {
 	digitalWrite(inputRightFront, movement[4]);
 	digitalWrite(inputRightBack, movement[5]);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
